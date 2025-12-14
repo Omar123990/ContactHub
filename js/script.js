@@ -25,17 +25,25 @@ function itemsDeleted() {
   if (contactList.length == 0) {
     document.querySelector(
       "#calls"
-    ).innerHTML = `<p class="text-center">No contacts available. Please add a contact.</p>`;
+    ).innerHTML = `<div class="py-80">
+  <div class="d-flex flex-column justify-content-center align-items-center">
+    <div class="p-4 mb-2 bg-black bg-opacity-25 d-flex justify-content-center align-items-center rounded-4">
+      <i class="fa-solid fa-address-book fa-2x"></i>
+    </div>
+    <p class="text-black text-opacity-50 mb-1">No contacts found</p>
+    <p class="text-black text-opacity-25 mb-0">Click "Add Contact" to get started</p>
+  </div>
+</div>`;
   }
   if (favItems.length == 0) {
     document.querySelector(
       "#favoriteNumbers"
-    ).innerHTML = `<p class="text-center">No contacts available. Please add a contact.</p>`;
+    ).innerHTML = `<p class="text-center text-black text-opacity-25">No favorites yet</p>`;
   }
   if (emergencyItems.length == 0) {
     document.querySelector(
       "#emergencyNumbers"
-    ).innerHTML = `<p class="text-center">No contacts available. Please add a contact.</p>`;
+    ).innerHTML = `<p class="text-center text-black text-opacity-25">No emergencies yet</p>`;
   }
 }
 itemsDeleted();
