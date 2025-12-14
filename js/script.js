@@ -179,16 +179,20 @@ function displayContacts() {
                 </div>
               </div>
               <div class="mt-3 gap-2 d-flex">
-                <span class="py-1 px-2 bg-red text-danger rounded-2
-${contactList[i].EmergencyInput ? "" : "invisible"}">
-  <i class="fa-solid fa-heart-pulse"></i> Emergency
+ 
+  <span class="py-1 px-2 bg-call text-primary rounded-2 ${
+  contactList[i].selectInput && contactList[i].selectInput !== "Select a group" ? "" : "invisible"
+}">
+  ${contactList[i].selectInput && contactList[i].selectInput !== "Select a group" ? contactList[i].selectInput : ""}
 </span>
-                <span class="py-1 px-2 bg-red text-danger rounded-2 ${
-                  contactList[i].EmergencyInput ? "" : "d-none"
-                }">
-  <i class="fa-solid fa-heart-pulse"></i> Emergency
-</span>
-              </div>
+
+ 
+  <span class="py-1 px-2 bg-red text-danger rounded-2 ${
+    contactList[i].EmergencyInput ? "" : "invisible"
+  }">
+    <i class="fa-solid fa-heart-pulse"></i> Emergency
+  </span>
+</div>
             </div>
             <div
               class="py-10 d-flex justify-content-between align-items-center px-3 redues-b-l-r border bg-light border-1"
@@ -306,14 +310,14 @@ function emerItems() {
     }
   }
 }
-
 function addFavIcon(index) {
   contactList[index].favoriteInput = !contactList[index].favoriteInput;
   localStorage.setItem("contacts", JSON.stringify(contactList));
   favoriteItems();
-  displayContacts();
-  itemsDeleted();
+  displayContacts(); 
+  itemsDeleted();  
 }
+
 function addEmerIcon(index) {
   contactList[index].EmergencyInput = !contactList[index].EmergencyInput;
   localStorage.setItem("contacts", JSON.stringify(contactList));
