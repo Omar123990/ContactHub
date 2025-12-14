@@ -124,8 +124,8 @@ function displayContacts() {
   for (var i = 0; i < contactList.length; i++) {
     blackBox += `
     <div class="col-md-6 ">
-          <div class="wrapper d-flex flex-column box-hover  rounded-4">
-            <div class="p-3 bg-white">
+          <div class="wrapper  d-flex flex-column box-hover  rounded-4">
+            <div class="p-3 redues-t-l-r bg-white">
               <div class="d-flex mb-3">
                 <div
                   class="d-flex justify-content-center h-fit p-4 rounded-4 color-border bg-gold align-items-center position-relative"
