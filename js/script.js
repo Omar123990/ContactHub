@@ -11,6 +11,7 @@ var notesInput = document.querySelector("#notesInput");
 var favoriteInput = document.querySelector("#favoriteInput");
 var EmergencyInput = document.querySelector("#EmergencyInput");
 var inputSearch = document.querySelector("#searchInput");
+var contactNumber = document.querySelector("#contactNumber");
 var contactList = [];
 var favItems = [];
 var emergencyItems = [];
@@ -248,6 +249,7 @@ function displayContacts() {
   }
   document.querySelector("#calls").innerHTML = blackBox;
   totalNumber.innerText = contactList.length;
+  contactNumber.innerText = contactList.length;
 
   var box = ``;
   for (var i = 0; i < favItems.length; i++) {
