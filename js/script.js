@@ -443,15 +443,17 @@ function search() {
         .toLowerCase()
         .includes(inputSearch.value.toLowerCase())
     ) {
-      blackBox += `
-    <div class="col-md-6">
-          <div class="wrapper d-flex flex-column box-hover bg-white rounded-4">
-            <div class="p-3">
+     blackBox += `
+    <div class="col-md-6 ">
+          <div class="wrapper  d-flex flex-column box-hover  rounded-4">
+            <div class="p-3 redues-t-l-r bg-white">
               <div class="d-flex mb-3">
                 <div
-                  class="d-flex justify-content-center h-fit p-3 rounded-4 color-border bg-icon-gradient align-items-center position-relative"
+                  class="d-flex justify-content-center h-fit p-4 rounded-4 color-border bg-gold align-items-center position-relative"
                 >
-                  <i class="fa-solid fa-star text-white fa-2x"></i>
+                <span class="text-white "> ${contactList[
+                  i
+                ].userName[0].toUpperCase()}</span>
                   <div
                     class="d-flex justify-content-center border border-1 p-1 border-white rounded-circle po-a-top align-items-center bg-gold
   ${contactList[i].favoriteInput ? "" : "d-none"}"
@@ -498,13 +500,20 @@ function search() {
                 </div>
               </div>
               <div class="mt-3 gap-2 d-flex">
-                <span class="py-1 px-2 bg-call text-primary rounded-2"
-                  >${contactList[i].selectInput}</span
-                >
-                <span class="py-1 px-2 bg-red text-danger rounded-2"
-                  ><i class="fa-solid fa-heart-pulse"></i> Emergency</span
-                >
-              </div>
+ 
+  <span class="py-1 px-2 bg-call text-primary rounded-2 ${
+  contactList[i].selectInput && contactList[i].selectInput !== "Select a group" ? "" : "invisible"
+}">
+  ${contactList[i].selectInput && contactList[i].selectInput !== "Select a group" ? contactList[i].selectInput : ""}
+</span>
+
+ 
+  <span class="py-1 px-2 bg-red text-danger rounded-2 ${
+    contactList[i].EmergencyInput ? "" : "invisible"
+  }">
+    <i class="fa-solid fa-heart-pulse"></i> Emergency
+  </span>
+</div>
             </div>
             <div
               class="py-10 d-flex justify-content-between align-items-center px-3 redues-b-l-r border bg-light border-1"
@@ -531,11 +540,11 @@ function search() {
               </div>
               <div class="d-flex gap-2">
                 <button onclick="addFavIcon(${i})" class="border-0 rounded-3 bg-warning bg-opacity-25 p-2"> <i class="${
-        contactList[i].favoriteInput ? "fa-solid" : "fa-regular"
-      } color-star fa-star"></i> </button>
+      contactList[i].favoriteInput ? "fa-solid" : "fa-regular"
+    } color-star fa-star"></i> </button>
                 <button onclick="addEmerIcon(${i})" class="border-0 rounded-3 bg-danger-25 p-2"> <i class="${
-        contactList[i].EmergencyInput ? "fa-solid" : "fa-regular"
-      } color-heart fa-heart"></i> </button>
+      contactList[i].EmergencyInput ? "fa-solid" : "fa-regular"
+    } color-heart fa-heart"></i> </button>
                 <button onclick="editContact(${i})" id="edit" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="border-0 rounded-3  bg-opacity-25 p-2"> <i class="fa-solid color-pen fa-pen"></i> </button>
                 <button onclick="deleteContact(${i})" id="delete" class="border-0 rounded-3  bg-opacity-25 p-2"> <i class="fa-solid color-trash fa-trash"></i> </button>
               </div>
