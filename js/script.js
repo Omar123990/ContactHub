@@ -85,7 +85,9 @@ function validateContact() {
 }
 
 function saveContact() {
+  clearValidationMessages();
   if (!validateContact()) return;
+  
 
   document.activeElement.blur();
 
@@ -363,11 +365,11 @@ function clearValidationMessages() {
   var inputs = [fullName, pNumber, emailInput];
 
   for (var i = 0; i < inputs.length; i++) {
-    inputs[i].style.border = "0";
+    inputs[i].style.border = "1px solid #ced4da";
 
     var errors = document.querySelectorAll(".error-message");
     for (var j = 0; j < errors.length; j++) {
-      errors[j].remove();
+      errors[j].innerHTML = "";
     }
   }
 }
