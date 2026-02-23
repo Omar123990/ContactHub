@@ -12,16 +12,38 @@ var favoriteInput = document.querySelector("#favoriteInput");
 var EmergencyInput = document.querySelector("#EmergencyInput");
 var inputSearch = document.querySelector("#searchInput");
 var contactNumber = document.querySelector("#contactNumber");
+
+var selectImg = document.querySelector("#select-img");
+var modalImgPreview = document.querySelector("#modal-img-preview");
+var modalIconPreview = document.querySelector("#modal-icon-preview");
+var currentProfileImage = "";
+
 var contactList = [];
 var favItems = [];
 var emergencyItems = [];
 var searchResults = [];
+
+selectImg.addEventListener("change", function () {
+  var file = this.files[0];
+  if (file) {
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      currentProfileImage = e.target.result;
+      modalImgPreview.src = currentProfileImage;
+      modalImgPreview.classList.remove("d-none");
+      modalIconPreview.classList.add("d-none");
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
 if (localStorage.getItem("contacts")) {
   contactList = JSON.parse(localStorage.getItem("contacts"));
   favoriteItems();
   emerItems();
   displayContacts();
 }
+
 function itemsDeleted() {
   if (contactList.length == 0) {
     document.querySelector("#calls").innerHTML = `<div class="py-80">
@@ -35,14 +57,12 @@ function itemsDeleted() {
 </div>`;
   }
   if (favItems.length == 0) {
-    document.querySelector(
-      "#favoriteNumbers"
-    ).innerHTML = `<p class="text-center text-black text-opacity-25">No favorites yet</p>`;
+    document.querySelector("#favoriteNumbers").innerHTML =
+      `<p class="text-center text-black text-opacity-25">No favorites yet</p>`;
   }
   if (emergencyItems.length == 0) {
-    document.querySelector(
-      "#emergencyNumbers"
-    ).innerHTML = `<p class="text-center text-black text-opacity-25">No emergencies yet</p>`;
+    document.querySelector("#emergencyNumbers").innerHTML =
+      `<p class="text-center text-black text-opacity-25">No emergencies yet</p>`;
   }
 }
 itemsDeleted();
@@ -92,15 +112,14 @@ function validateEmail() {
 function validateContact() {
   return validateFullName() && validatePhone() && validateEmail();
 }
+
 fullName.addEventListener("input", validateFullName);
 pNumber.addEventListener("input", validatePhone);
 emailInput.addEventListener("input", validateEmail);
 
-
 function saveContact() {
   clearValidationMessages();
   if (!validateContact()) return;
-  
 
   document.activeElement.blur();
 
@@ -112,6 +131,7 @@ function saveContact() {
     selectInput: selectInput.value,
     favoriteInput: favoriteInput.checked,
     EmergencyInput: EmergencyInput.checked,
+    profileImg: currentProfileImage, 
   };
 
   contactList.push(contact);
@@ -122,7 +142,7 @@ function saveContact() {
   clearForm();
 
   var modal = bootstrap.Modal.getInstance(
-    document.getElementById("staticBackdrop")
+    document.getElementById("staticBackdrop"),
   );
   modal.hide();
 
@@ -135,112 +155,96 @@ function saveContact() {
 }
 
 function displayContacts() {
-  blackBox = ``;
+  var blackBox = ``;
   for (var i = 0; i < contactList.length; i++) {
+    var avatarHTML = contactList[i].profileImg
+      ? `<img src="${contactList[i].profileImg}" class="w-100 h-100 rounded-circle object-fit-cover" alt="avatar">`
+      : `<span class="text-white fs-4 fw-bold">${contactList[i].userName[0].toUpperCase()}</span>`;
+
     blackBox += `
     <div class="col-md-6 ">
-          <div class="wrapper  d-flex flex-column box-hover  rounded-4">
+          <div class="wrapper d-flex flex-column box-hover rounded-4">
             <div class="p-3 redues-t-l-r bg-white">
               <div class="d-flex mb-3">
-                <div
-                  class="d-flex justify-content-center h-fit p-4 rounded-4 color-border bg-gold align-items-center position-relative"
-                >
-                <span class="text-white "> ${contactList[
-                  i
-                ].userName[0].toUpperCase()}</span>
-                  <div
-                    class="d-flex justify-content-center border border-1 p-1 border-white rounded-circle po-a-top align-items-center bg-gold
-  ${contactList[i].favoriteInput ? "" : "d-none"}"
-                  >
-                    <i class="fa-star text-white fa-solid"></i>
+                
+                <div class="d-flex justify-content-center contact-avatar rounded-circle color-border bg-gold align-items-center position-relative">
+                  ${avatarHTML}
+                  <div class="d-flex justify-content-center badge-sm border border-2 p-1 border-white rounded-circle po-a-top align-items-center bg-gold ${contactList[i].favoriteInput ? "" : "d-none"}">
+                    <i class="fa-star text-white fa-solid" style="font-size: 10px;"></i>
                   </div>
-                  <div
-                    class="d-flex justify-content-center border border-1 p-1 border-white rounded-circle po-a-bottom align-items-center bg-icon-red
-  ${contactList[i].EmergencyInput ? "" : "d-none"}"
-                  >
-                    <i class="fa-heart-pulse text-white fa-solid"></i>
+                  <div class="d-flex justify-content-center badge-sm border border-2 p-1 border-white rounded-circle po-a-bottom align-items-center bg-icon-red ${contactList[i].EmergencyInput ? "" : "d-none"}">
+                    <i class="fa-heart-pulse text-white fa-solid" style="font-size: 10px;"></i>
                   </div>
                 </div>
-                <div class="w-100 ms-3">
-                  <h3 class="mb-0 h5">${contactList[i].userName}</h3>
+
+                <div class="w-100 ms-3 d-flex flex-column justify-content-center">
+                  <h3 class="mb-1 h5">${contactList[i].userName}</h3>
                   <span class="mb-0 d-flex align-items-center gap-2">
-                    <div
-                      class="p-2 rounded-2 bg-call d-flex justify-content-center w-fit"
-                    >
+                    <div class="p-2 rounded-2 bg-call d-flex justify-content-center w-fit">
                       <i class="fa-solid text-primary fa-phone"></i>
                     </div>
-                    <span>${contactList[i].pNumber}</span>
+                    <span class="text-secondary">${contactList[i].pNumber}</span>
                   </span>
                 </div>
               </div>
               <div class="mt-2">
                 <div class="d-flex align-items-center gap-2 mb-2">
-                  <div
-                    class="p-2 rounded-2 bg-email d-flex justify-content-center w-fit"
-                  >
+                  <div class="p-2 rounded-2 bg-email d-flex justify-content-center w-fit">
                     <i class="fa-solid color-email fa-envelope"></i>
                   </div>
-                  <span>${contactList[i].emailInput}</span>
+                  <span class="text-secondary">${contactList[i].emailInput}</span>
                 </div>
               </div>
               <div class="">
                 <div class="d-flex align-items-center gap-2 mb-2">
-                  <div
-                    class="p-2 rounded-2 bg-map d-flex justify-content-center w-fit"
-                  >
+                  <div class="p-2 rounded-2 bg-map d-flex justify-content-center w-fit">
                     <i class="fa-solid text-success fa-location-dot"></i>
                   </div>
-                  <span>${contactList[i].addressInput}</span>
+                  <span class="text-secondary">${contactList[i].addressInput}</span>
                 </div>
               </div>
               <div class="mt-3 gap-2 d-flex">
- 
-  <span class="py-1 px-2 bg-call text-primary rounded-2 ${
-  contactList[i].selectInput && contactList[i].selectInput !== "Select a group" ? "" : "invisible"
-}">
-  ${contactList[i].selectInput && contactList[i].selectInput !== "Select a group" ? contactList[i].selectInput : ""}
-</span>
-
- 
-  <span class="py-1 px-2 bg-red text-danger rounded-2 ${
-    contactList[i].EmergencyInput ? "" : "invisible"
-  }">
-    <i class="fa-solid fa-heart-pulse"></i> Emergency
-  </span>
-</div>
-            </div>
-            <div
-              class="py-10 d-flex justify-content-between align-items-center px-3 redues-b-l-r border bg-light border-1"
-            >
-              <div class="d-flex gap-3">
-                <a class="text-decoration-none" href="tel:${
-                  contactList[i].pNumber
+                <span class="py-1 px-2 bg-call text-primary rounded-2 ${
+                  contactList[i].selectInput &&
+                  contactList[i].selectInput !== "Select a group"
+                    ? ""
+                    : "invisible"
                 }">
-                  <div
-                    class="p-2 rounded-2 bg-map d-flex justify-content-center w-fit"
-                  >
+                  ${contactList[i].selectInput && contactList[i].selectInput !== "Select a group" ? contactList[i].selectInput : ""}
+                </span>
+                <span class="py-1 px-2 bg-red text-danger rounded-2 ${
+                  contactList[i].EmergencyInput ? "" : "invisible"
+                }">
+                  <i class="fa-solid fa-heart-pulse"></i> Emergency
+                </span>
+              </div>
+            </div>
+            <div class="py-10 d-flex justify-content-between align-items-center px-3 redues-b-l-r border bg-light border-1">
+              <div class="d-flex gap-3">
+                <a class="text-decoration-none" href="tel:${contactList[i].pNumber}">
+                  <div class="p-2 rounded-2 bg-map d-flex justify-content-center w-fit">
                     <i class="fa-solid text-success fa-phone"></i>
                   </div>
                 </a>
-                <a class="text-decoration-none" href="mailto:${
-                  contactList[i].emailInput
-                }">
-                  <div
-                    class="p-2 rounded-2 bg-email d-flex justify-content-center w-fit"
-                  >
+                <a class="text-decoration-none" href="mailto:${contactList[i].emailInput}">
+                  <div class="p-2 rounded-2 bg-email d-flex justify-content-center w-fit">
                     <i class="fa-solid color-email fa-envelope"></i>
                   </div>
                 </a>
               </div>
               <div class="d-flex gap-2">
-                <button onclick="addFavIcon(${i})" class="border-0 rounded-3 bg-warning bg-opacity-25 p-2"> <i class="${
-      contactList[i].favoriteInput ? "fa-solid" : "fa-regular"
-    } color-star fa-star"></i> </button>
-                <button onclick="addEmerIcon(${i})" class="border-0 rounded-3 bg-danger-25 p-2"> <i class="${
-      contactList[i].EmergencyInput ? "fa-solid" : "fa-regular"
-    } color-heart fa-heart"></i> </button>
-                <button onclick="editContact(${i})" id="edit" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="border-0 rounded-3  bg-opacity-25 p-2"> <i class="fa-solid color-pen fa-pen"></i> </button>
-                <button onclick="deleteContact(${i})" id="delete" class="border-0 rounded-3  bg-opacity-25 p-2"> <i class="fa-solid color-trash fa-trash"></i> </button>
+                <button onclick="addFavIcon(${i})" class="border-0 rounded-3 bg-warning bg-opacity-25 p-2"> 
+                  <i class="${contactList[i].favoriteInput ? "fa-solid" : "fa-regular"} color-star fa-star"></i> 
+                </button>
+                <button onclick="addEmerIcon(${i})" class="border-0 rounded-3 bg-danger-25 p-2" style="background-color: rgba(247, 17, 67, 0.1);"> 
+                  <i class="${contactList[i].EmergencyInput ? "fa-solid" : "fa-regular"} color-heart fa-heart"></i> 
+                </button>
+                <button onclick="editContact(${i})" id="edit" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="border-0 rounded-3 bg-secondary bg-opacity-25 p-2"> 
+                  <i class="fa-solid color-pen fa-pen"></i> 
+                </button>
+                <button onclick="deleteContact(${i})" id="delete" class="border-0 rounded-3 bg-secondary bg-opacity-25 p-2"> 
+                  <i class="fa-solid color-trash fa-trash"></i> 
+                </button>
               </div>
             </div>
           </div>
@@ -255,26 +259,19 @@ function displayContacts() {
   for (var i = 0; i < favItems.length; i++) {
     box += `
     <div class="mb-2">
-                    <div
-                      class="d-flex bg-light rounded-4 p-10 align-items-center"
-                    >
-                      <div
-                        class="d-flex justify-content-center me-3 h-fit p-2 rounded-4 color-border bg-icon-gradient align-items-center"
-                      >
-                        <i class="fa-solid fa-star text-white"></i>
-                      </div>
-                      <div class="d-flex flex-column">
-                        <span>${favItems[i].userName}</span>
-                        <span>${favItems[i].pNumber}</span>
-                      </div>
-                      <a
-                        href="tel:${favItems[i].pNumber}"
-                        class="p-3  bg-green text-decoration-none rounded-4 ms-auto"
-                      >
-                        <i class="fa-solid text-success fa-phone"></i>
-                      </a>
-                    </div>
-                  </div>
+      <div class="d-flex bg-light rounded-4 p-10 align-items-center">
+        <div class="d-flex justify-content-center me-3 h-fit p-2 rounded-4 color-border bg-icon-gradient align-items-center">
+          <i class="fa-solid fa-star text-white"></i>
+        </div>
+        <div class="d-flex flex-column">
+          <span class="fw-bold">${favItems[i].userName}</span>
+          <span class="text-secondary fa-sm">${favItems[i].pNumber}</span>
+        </div>
+        <a href="tel:${favItems[i].pNumber}" class="p-3 bg-green text-decoration-none rounded-4 ms-auto">
+          <i class="fa-solid text-success fa-phone"></i>
+        </a>
+      </div>
+    </div>
     `;
   }
   document.querySelector("#favoriteNumbers").innerHTML = box;
@@ -284,26 +281,19 @@ function displayContacts() {
   for (var i = 0; i < emergencyItems.length; i++) {
     boxEmergency += `
     <div class="mb-2">
-                    <div
-                      class="d-flex bg-light rounded-4 p-10 align-items-center"
-                    >
-                      <div
-                        class="d-flex justify-content-center me-3 h-fit p-2 rounded-4 color-border bg-icon-gradient align-items-center"
-                      >
-                        <i class="fa-solid fa-star text-white"></i>
-                      </div>
-                      <div class="d-flex flex-column">
-                        <span>${emergencyItems[i].userName}</span>
-                        <span>${emergencyItems[i].pNumber}</span>
-                      </div>
-                      <a
-                        href="tel:${emergencyItems[i].pNumber}"
-                        class="p-3  bg-red text-decoration-none rounded-4 ms-auto"
-                      >
-                        <i class="fa-solid text-danger fa-phone"></i>
-                      </a>
-                    </div>
-                  </div>
+      <div class="d-flex bg-light rounded-4 p-10 align-items-center">
+        <div class="d-flex justify-content-center me-3 h-fit p-2 rounded-4 color-border bg-icon-red align-items-center">
+          <i class="fa-solid fa-heart-pulse text-white"></i>
+        </div>
+        <div class="d-flex flex-column">
+          <span class="fw-bold">${emergencyItems[i].userName}</span>
+          <span class="text-secondary fa-sm">${emergencyItems[i].pNumber}</span>
+        </div>
+        <a href="tel:${emergencyItems[i].pNumber}" class="p-3 bg-red text-decoration-none rounded-4 ms-auto">
+          <i class="fa-solid text-danger fa-phone"></i>
+        </a>
+      </div>
+    </div>
     `;
   }
   document.querySelector("#emergencyNumbers").innerHTML = boxEmergency;
@@ -330,8 +320,8 @@ function addFavIcon(index) {
   contactList[index].favoriteInput = !contactList[index].favoriteInput;
   localStorage.setItem("contacts", JSON.stringify(contactList));
   favoriteItems();
-  displayContacts(); 
-  itemsDeleted();  
+  displayContacts();
+  itemsDeleted();
 }
 
 function addEmerIcon(index) {
@@ -387,6 +377,7 @@ function clearValidationMessages() {
     }
   }
 }
+
 var currentEditIndex;
 function editContact(index) {
   clearValidationMessages();
@@ -394,8 +385,7 @@ function editContact(index) {
   currentEditIndex = index;
   document.querySelector("#btnSave").classList.replace("d-block", "d-none");
   document.querySelector("#btnUpdate").classList.replace("d-none", "d-block");
-  btnSave.classList.replace("d-block", "d-none");
-  btnUpdate.classList.replace("d-none", "d-block");
+
   fullName.value = contactList[index].userName;
   pNumber.value = contactList[index].pNumber;
   emailInput.value = contactList[index].emailInput;
@@ -403,7 +393,19 @@ function editContact(index) {
   selectInput.value = contactList[index].selectInput;
   favoriteInput.checked = contactList[index].favoriteInput;
   EmergencyInput.checked = contactList[index].EmergencyInput;
+
+  currentProfileImage = contactList[index].profileImg || "";
+  if (currentProfileImage) {
+    modalImgPreview.src = currentProfileImage;
+    modalImgPreview.classList.remove("d-none");
+    modalIconPreview.classList.add("d-none");
+  } else {
+    modalImgPreview.src = "";
+    modalImgPreview.classList.add("d-none");
+    modalIconPreview.classList.remove("d-none");
+  }
 }
+
 function updateContact() {
   var contact = {
     userName: fullName.value,
@@ -413,6 +415,7 @@ function updateContact() {
     selectInput: selectInput.value,
     favoriteInput: favoriteInput.checked,
     EmergencyInput: EmergencyInput.checked,
+    profileImg: currentProfileImage,
   };
   contactList.splice(currentEditIndex, 1, contact);
   localStorage.setItem("contacts", JSON.stringify(contactList));
@@ -427,8 +430,15 @@ function updateContact() {
   });
   document.querySelector("#btnSave").classList.replace("d-none", "d-block");
   document.querySelector("#btnUpdate").classList.replace("d-block", "d-none");
+
+  var modal = bootstrap.Modal.getInstance(
+    document.getElementById("staticBackdrop"),
+  );
+  modal.hide();
+
   clearForm();
 }
+
 function clearForm() {
   fullName.value = "";
   pNumber.value = "";
@@ -437,7 +447,14 @@ function clearForm() {
   selectInput.value = "";
   favoriteInput.checked = false;
   EmergencyInput.checked = false;
+
+  currentProfileImage = "";
+  selectImg.value = "";
+  modalImgPreview.src = "";
+  modalImgPreview.classList.add("d-none");
+  modalIconPreview.classList.remove("d-none");
 }
+
 document
   .querySelector("#staticBackdrop")
   .addEventListener("hidden.bs.modal", function () {
@@ -445,6 +462,7 @@ document
     document.querySelector("#btnUpdate").classList.replace("d-block", "d-none");
     clearForm();
   });
+
 function search() {
   var blackBox = ``;
   for (let i = 0; i < contactList.length; i++) {
@@ -459,115 +477,97 @@ function search() {
         .toLowerCase()
         .includes(inputSearch.value.toLowerCase())
     ) {
-     blackBox += `
-    <div class="col-md-6 ">
-          <div class="wrapper  d-flex flex-column box-hover  rounded-4">
+      var avatarHTML = contactList[i].profileImg
+        ? `<img src="${contactList[i].profileImg}" class="w-100 h-100 rounded-circle object-fit-cover" alt="avatar">`
+        : `<span class="text-white fs-4 fw-bold">${contactList[i].userName[0].toUpperCase()}</span>`;
+
+      blackBox += `
+      <div class="col-md-6 ">
+          <div class="wrapper d-flex flex-column box-hover rounded-4">
             <div class="p-3 redues-t-l-r bg-white">
               <div class="d-flex mb-3">
-                <div
-                  class="d-flex justify-content-center h-fit p-4 rounded-4 color-border bg-gold align-items-center position-relative"
-                >
-                <span class="text-white "> ${contactList[
-                  i
-                ].userName[0].toUpperCase()}</span>
-                  <div
-                    class="d-flex justify-content-center border border-1 p-1 border-white rounded-circle po-a-top align-items-center bg-gold
-  ${contactList[i].favoriteInput ? "" : "d-none"}"
-                  >
-                    <i class="fa-star text-white fa-solid"></i>
+                <div class="d-flex justify-content-center contact-avatar rounded-circle color-border bg-gold align-items-center position-relative">
+                  ${avatarHTML}
+                  <div class="d-flex justify-content-center badge-sm border border-2 p-1 border-white rounded-circle po-a-top align-items-center bg-gold ${contactList[i].favoriteInput ? "" : "d-none"}">
+                    <i class="fa-star text-white fa-solid" style="font-size: 10px;"></i>
                   </div>
-                  <div
-                    class="d-flex justify-content-center border border-1 p-1 border-white rounded-circle po-a-bottom align-items-center bg-icon-red
-  ${contactList[i].EmergencyInput ? "" : "d-none"}"
-                  >
-                    <i class="fa-heart-pulse text-white fa-solid"></i>
+                  <div class="d-flex justify-content-center badge-sm border border-2 p-1 border-white rounded-circle po-a-bottom align-items-center bg-icon-red ${contactList[i].EmergencyInput ? "" : "d-none"}">
+                    <i class="fa-heart-pulse text-white fa-solid" style="font-size: 10px;"></i>
                   </div>
                 </div>
-                <div class="w-100 ms-3">
-                  <h3 class="mb-0 h5">${contactList[i].userName}</h3>
+                <div class="w-100 ms-3 d-flex flex-column justify-content-center">
+                  <h3 class="mb-1 h5">${contactList[i].userName}</h3>
                   <span class="mb-0 d-flex align-items-center gap-2">
-                    <div
-                      class="p-2 rounded-2 bg-call d-flex justify-content-center w-fit"
-                    >
+                    <div class="p-2 rounded-2 bg-call d-flex justify-content-center w-fit">
                       <i class="fa-solid text-primary fa-phone"></i>
                     </div>
-                    <span>${contactList[i].pNumber}</span>
+                    <span class="text-secondary">${contactList[i].pNumber}</span>
                   </span>
                 </div>
               </div>
               <div class="mt-2">
                 <div class="d-flex align-items-center gap-2 mb-2">
-                  <div
-                    class="p-2 rounded-2 bg-email d-flex justify-content-center w-fit"
-                  >
+                  <div class="p-2 rounded-2 bg-email d-flex justify-content-center w-fit">
                     <i class="fa-solid color-email fa-envelope"></i>
                   </div>
-                  <span>${contactList[i].emailInput}</span>
+                  <span class="text-secondary">${contactList[i].emailInput}</span>
                 </div>
               </div>
               <div class="">
                 <div class="d-flex align-items-center gap-2 mb-2">
-                  <div
-                    class="p-2 rounded-2 bg-map d-flex justify-content-center w-fit"
-                  >
+                  <div class="p-2 rounded-2 bg-map d-flex justify-content-center w-fit">
                     <i class="fa-solid text-success fa-location-dot"></i>
                   </div>
-                  <span>${contactList[i].addressInput}</span>
+                  <span class="text-secondary">${contactList[i].addressInput}</span>
                 </div>
               </div>
               <div class="mt-3 gap-2 d-flex">
- 
-  <span class="py-1 px-2 bg-call text-primary rounded-2 ${
-  contactList[i].selectInput && contactList[i].selectInput !== "Select a group" ? "" : "invisible"
-}">
-  ${contactList[i].selectInput && contactList[i].selectInput !== "Select a group" ? contactList[i].selectInput : ""}
-</span>
-
- 
-  <span class="py-1 px-2 bg-red text-danger rounded-2 ${
-    contactList[i].EmergencyInput ? "" : "invisible"
-  }">
-    <i class="fa-solid fa-heart-pulse"></i> Emergency
-  </span>
-</div>
-            </div>
-            <div
-              class="py-10 d-flex justify-content-between align-items-center px-3 redues-b-l-r border bg-light border-1"
-            >
-              <div class="d-flex gap-3">
-                <a class="text-decoration-none" href="tel:${
-                  contactList[i].pNumber
+                <span class="py-1 px-2 bg-call text-primary rounded-2 ${
+                  contactList[i].selectInput &&
+                  contactList[i].selectInput !== "Select a group"
+                    ? ""
+                    : "invisible"
                 }">
-                  <div
-                    class="p-2 rounded-2 bg-map d-flex justify-content-center w-fit"
-                  >
+                  ${contactList[i].selectInput && contactList[i].selectInput !== "Select a group" ? contactList[i].selectInput : ""}
+                </span>
+                <span class="py-1 px-2 bg-red text-danger rounded-2 ${
+                  contactList[i].EmergencyInput ? "" : "invisible"
+                }">
+                  <i class="fa-solid fa-heart-pulse"></i> Emergency
+                </span>
+              </div>
+            </div>
+            <div class="py-10 d-flex justify-content-between align-items-center px-3 redues-b-l-r border bg-light border-1">
+              <div class="d-flex gap-3">
+                <a class="text-decoration-none" href="tel:${contactList[i].pNumber}">
+                  <div class="p-2 rounded-2 bg-map d-flex justify-content-center w-fit">
                     <i class="fa-solid text-success fa-phone"></i>
                   </div>
                 </a>
-                <a class="text-decoration-none" href="mailto:${
-                  contactList[i].emailInput
-                }">
-                  <div
-                    class="p-2 rounded-2 bg-email d-flex justify-content-center w-fit"
-                  >
+                <a class="text-decoration-none" href="mailto:${contactList[i].emailInput}">
+                  <div class="p-2 rounded-2 bg-email d-flex justify-content-center w-fit">
                     <i class="fa-solid color-email fa-envelope"></i>
                   </div>
                 </a>
               </div>
               <div class="d-flex gap-2">
-                <button onclick="addFavIcon(${i})" class="border-0 rounded-3 bg-warning bg-opacity-25 p-2"> <i class="${
-      contactList[i].favoriteInput ? "fa-solid" : "fa-regular"
-    } color-star fa-star"></i> </button>
-                <button onclick="addEmerIcon(${i})" class="border-0 rounded-3 bg-danger-25 p-2"> <i class="${
-      contactList[i].EmergencyInput ? "fa-solid" : "fa-regular"
-    } color-heart fa-heart"></i> </button>
-                <button onclick="editContact(${i})" id="edit" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="border-0 rounded-3  bg-opacity-25 p-2"> <i class="fa-solid color-pen fa-pen"></i> </button>
-                <button onclick="deleteContact(${i})" id="delete" class="border-0 rounded-3  bg-opacity-25 p-2"> <i class="fa-solid color-trash fa-trash"></i> </button>
+                <button onclick="addFavIcon(${i})" class="border-0 rounded-3 bg-warning bg-opacity-25 p-2"> 
+                  <i class="${contactList[i].favoriteInput ? "fa-solid" : "fa-regular"} color-star fa-star"></i> 
+                </button>
+                <button onclick="addEmerIcon(${i})" class="border-0 rounded-3 bg-danger-25 p-2" style="background-color: rgba(247, 17, 67, 0.1);"> 
+                  <i class="${contactList[i].EmergencyInput ? "fa-solid" : "fa-regular"} color-heart fa-heart"></i> 
+                </button>
+                <button onclick="editContact(${i})" id="edit" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="border-0 rounded-3 bg-secondary bg-opacity-25 p-2"> 
+                  <i class="fa-solid color-pen fa-pen"></i> 
+                </button>
+                <button onclick="deleteContact(${i})" id="delete" class="border-0 rounded-3 bg-secondary bg-opacity-25 p-2"> 
+                  <i class="fa-solid color-trash fa-trash"></i> 
+                </button>
               </div>
             </div>
           </div>
         </div>
-    `;
+      `;
     }
   }
   document.querySelector("#calls").innerHTML = blackBox;

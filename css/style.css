@@ -94,7 +94,9 @@ body {
   padding-block: 2rem;
 }
 .box-shadow {
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 1px 3px 0 rgba(0, 0, 0, 0.1),
+    0 1px 2px 0 rgba(0, 0, 0, 0.06);
 }
 .bg-red {
   background-color: #fef2f2;
@@ -103,15 +105,18 @@ body {
   background-color: #f71143;
 }
 .shadow-blue {
-  box-shadow: 0 4px 6px -1px rgba(25, 101, 253, 0.3),
+  box-shadow:
+    0 4px 6px -1px rgba(25, 101, 253, 0.3),
     0 2px 4px -1px rgba(25, 101, 253, 0.06);
 }
 .shadow-gold {
-  box-shadow: 0 4px 6px -1px rgba(255, 123, 0, 0.3),
+  box-shadow:
+    0 4px 6px -1px rgba(255, 123, 0, 0.3),
     0 2px 4px -1px rgba(255, 123, 0, 0.06);
 }
 .shadow-red {
-  box-shadow: 0 4px 6px -1px rgba(247, 17, 67, 0.3),
+  box-shadow:
+    0 4px 6px -1px rgba(247, 17, 67, 0.3),
     0 2px 4px -1px rgba(247, 17, 67, 0.06);
 }
 .redues-t-l-r {
@@ -119,7 +124,8 @@ body {
   border-top-right-radius: 0.5rem;
 }
 .shadow-icon {
-  box-shadow: 0 4px 6px -1px rgba(95, 52, 249, 0.3),
+  box-shadow:
+    0 4px 6px -1px rgba(95, 52, 249, 0.3),
     0 2px 4px -1px rgba(95, 52, 249, 0.06);
 }
 .color-border {
@@ -129,7 +135,8 @@ body {
   transition: all 0.2s ease-in-out;
 }
 .box-hover:hover {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
     0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 .w-96 {
@@ -230,6 +237,19 @@ button:hover i.color-pen {
 .input-error {
   border: 1px solid red !important;
 }
+.contact-avatar {
+  width: 65px;
+  height: 65px;
+  flex-shrink: 0;
+}
+.object-fit-cover {
+  object-fit: cover;
+}
+.badge-sm {
+  width: 24px;
+  height: 24px;
+}
+
 @media (max-width: 639.9px) {
   .container {
     max-width: 100% !important;
