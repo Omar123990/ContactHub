@@ -264,7 +264,7 @@ function displayContacts() {
           <i class="fa-solid fa-star text-white"></i>
         </div>
         <div class="d-flex flex-column">
-          <span class="fw-bold">${favItems[i].userName}</span>
+          <span class="fw-bold mb-1">${favItems[i].userName}</span>
           <span class="text-secondary fa-sm">${favItems[i].pNumber}</span>
         </div>
         <a href="tel:${favItems[i].pNumber}" class="p-3 bg-green text-decoration-none rounded-4 ms-auto">
@@ -286,10 +286,10 @@ function displayContacts() {
           <i class="fa-solid fa-heart-pulse text-white"></i>
         </div>
         <div class="d-flex flex-column">
-          <span class="fw-bold">${emergencyItems[i].userName}</span>
+          <span class="fw-bold mb-1">${emergencyItems[i].userName}</span>
           <span class="text-secondary fa-sm">${emergencyItems[i].pNumber}</span>
         </div>
-        <a href="tel:${emergencyItems[i].pNumber}" class="p-3 bg-red text-decoration-none rounded-4 ms-auto">
+        <a href="tel:${emergencyItems[i].pNumber}" class="p-3 mt-1 bg-red text-decoration-none rounded-4 ms-auto">
           <i class="fa-solid text-danger fa-phone"></i>
         </a>
       </div>
